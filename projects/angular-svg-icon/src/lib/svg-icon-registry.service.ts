@@ -5,6 +5,7 @@ import { catchError, finalize, map, share, tap } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
 import { SvgLoader } from './svg-loader';
 
+export const DEPLOY_URL = new InjectionToken<string>('DEPLOY_URL');
 export const SERVER_URL = new InjectionToken<string>('SERVER_URL');
 
 @Injectable()
@@ -13,10 +14,12 @@ export class SvgIconRegistryService {
 	private document: Document;
 	private iconsByUrl = new Map<string, SVGElement>();
 	private iconsLoadingByUrl = new Map<string, Observable<SVGElement>>();
+	private absoluteUrlRegExp = /^(http(s)?):/u;
 
 	constructor(
 		private loader: SvgLoader,
 		@Inject(PLATFORM_ID) private platformId: Object,
+		@Optional() @Inject(DEPLOY_URL) protected deployUrl: string,
 		@Optional() @Inject(SERVER_URL) protected serverUrl: string,
 		@Optional() @Inject(DOCUMENT) private _document: any) {
 		this.document = this._document;
@@ -38,7 +41,9 @@ export class SvgIconRegistryService {
 		// not sure if there should be a possibility to use name for server usage
 		// so overriding it for now if provided
 		// maybe should separate functionality for url and name use-cases
-		if (this.serverUrl && url.match(/^(http(s)?):/) === null) {
+		if (this.deployUrl && url.match(this.absoluteUrlRegExp) === null) {
+			url = this.deployUrl + url  ;
+		} else if (this.serverUrl && url.match(this.absoluteUrlRegExp) === null) {
 			url = this.serverUrl + url;
 			name = url;
 		}
@@ -89,9 +94,10 @@ export function SVG_ICON_REGISTRY_PROVIDER_FACTORY(
 		parentRegistry: SvgIconRegistryService,
 		loader: SvgLoader,
 		platformId: object,
+		deployUrl?: string,
 		serverUrl?: string,
 		document?: any) {
-	return parentRegistry || new SvgIconRegistryService(loader, platformId,  serverUrl, document);
+	return parentRegistry || new SvgIconRegistryService(loader, platformId, deployUrl, serverUrl, document);
 }
 
 export const SVG_ICON_REGISTRY_PROVIDER = {
