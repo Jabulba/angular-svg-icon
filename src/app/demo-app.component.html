@@ -1,6 +1,6 @@
 <div class="portal">
 
-	<div style="width:500px;display: flex;">
+	<div class="example"> <!-- style="width:500px;display: flex;"> -->
 		<svg-icon src="assets/images/eye.svg" class="red"></svg-icon>
 		<svg-icon src="assets/images/eye.svg" class="green" style="transform: scaleX(-1);"></svg-icon>
 		<svg-icon src="assets/images/eye.svg" class="blue"></svg-icon>
@@ -54,7 +54,7 @@
 	<div class="explain">
 		<p [hidden]="!display">Unloading the SVG will remove it from the registry. The next time the &lt;svg&#8209;icon&gt; is
 		used with the SVG's URL, the SVG will be loaded again.  Unloading will not remove a SVG already displayed in
-		the document as can be seen by the persistence of the three <svg-icon src="assets/images/eye.svg" [svgStyle]="{'width.px':14}">
+		the document as can be seen by the persistence of the three <svg-icon src="assets/images/eye.svg" [svgStyle]="{ 'width.px': '14'}">
 		</svg-icon> SVG at the top of the page.</p>
 
 		<p *ngIf="!display">Reloading the SVG will cause an http fetch to occur to load the SVG into the registry
@@ -73,6 +73,7 @@
 		<div class="bulb">
 			<svg-icon src="assets/images/lightbulb.svg" [svgClass]="svgKlass" [class]="klass" [applyClass]="applied"></svg-icon>
 		</div>
+		<p class="bulb" [ngClass]="klass">{{klass}}</p>
 
 		<pre>&lt;svg-icon src="assets/images/lightbulb.svg" [svgClass]="{{svgKlass}}"
   [class]="{{klass}}" [applyClass]="{{applied|json}}"&gt;
@@ -88,7 +89,6 @@
 
 		<button (click)="applied = !applied">{{applied ? 'ignore class' : 'apply class'}}</button>
 	</div>
-
 
 	<div class="explain">
 		<h2>Apply class to different SVG parts</h2>
